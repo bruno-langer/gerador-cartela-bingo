@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criador de Cartelas de Bingo</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Nunito:wght@400;700&family=Poppins:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <header class="app-header">
+    <div class="container">
+      <h1>Criador de Cartelas de Bingo</h1>
+      <p>Crie cartelas com palavras para chá de bebê e outras brincadeiras</p>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+    <section class="panel">
+      <h2>Configurações</h2>
+
+      <div class="form-group">
+        <label for="wordsInput">Palavras (uma por linha)</label>
+        <textarea id="wordsInput" rows="10" placeholder="fralda&#10;mamadeira&#10;berço&#10;chupeta&#10;..."></textarea>
+        <small>Quanto mais palavras, melhor para evitar repetições entre cartelas.</small>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="gridSize">Tamanho do grid</label>
+          <select id="gridSize">
+            <option value="3">3 x 3</option>
+            <option value="4">4 x 4</option>
+            <option value="5" selected>5 x 5</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="cardCount">Quantidade de cartelas</label>
+          <input type="number" id="cardCount" min="1" max="100" value="6">
+        </div>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" id="freeCell" checked>
+          Usar casa livre no centro (apenas quando grid ímpar)
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="freeCellType">Conteúdo da casa livre</label>
+        <select id="freeCellType">
+          <option value="text" selected>Texto personalizado</option>
+          <option value="icon-flor">Ícone - Flor ✿</option>
+          <option value="icon-coracao">Ícone - Coração ♥</option>
+          <option value="icon-estrela">Ícone - Estrela ★</option>
+          <option value="icon-bolinha">Ícone - Bolinha ●</option>
+          <option value="icon-circulo">Ícone - Círculo ○</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="freeCellTextGroup">
+        <label for="freeCellText">Texto da casa livre</label>
+        <input type="text" id="freeCellText" value="LIVRE">
+      </div>
+
+      <div class="form-group">
+        <label for="cardTitle">Título em cima da cartela (opcional)</label>
+        <input type="text" id="cardTitle" placeholder="Chá de Bebê da Ana e Pedro">
+      </div>
+
+      <h3>Aparência</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bgColor">Cor de fundo</label>
+          <input type="color" id="bgColor" value="#ffffff">
+        </div>
+        <div class="form-group">
+          <label for="borderColor">Cor das bordas</label>
+          <input type="color" id="borderColor" value="#2f2f2f">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="textColor">Cor do texto</label>
+          <input type="color" id="textColor" value="#1f1f1f">
+        </div>
+        <div class="form-group">
+          <label for="freeCellColor">Cor da casa livre</label>
+          <input type="color" id="freeCellColor" value="#f5b700">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fontFamily">Fonte</label>
+          <select id="fontFamily">
+            <option value="Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" selected>Inter</option>
+            <option value="Poppins, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">Poppins</option>
+            <option value="Nunito, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">Nunito</option>
+            <option value="Roboto, system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif">Roboto</option>
+            <option value="Arial, Helvetica, sans-serif">Arial</option>
+            <option value="'Times New Roman', Times, serif">Times New Roman</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="fontSize">Tamanho da fonte</label>
+          <input type="range" id="fontSize" min="10" max="18" step="1" value="14">
+          <div class="range-labels">
+            <span>10</span>
+            <span id="fontSizeValue">14</span>
+            <span>18</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="generateBtn" class="btn primary">Gerar cartelas</button>
+        <button id="downloadAllBtn" class="btn" disabled>Baixar todas em ZIP</button>
+      </div>
+
+      <div id="status" class="status"></div>
+    </section>
+
+    <section class="preview">
+      <div class="preview-header">
+        <h2>Pré-visualização</h2>
+        <p>As cartelas serão geradas aqui. Você pode baixar individualmente ou todas juntas.</p>
+      </div>
+      <div id="previewGrid" class="cards-grid"></div>
+    </section>
+  </main>
+
+  <template id="cardTemplate">
+    <article class="bingo-card">
+      <header class="card-header">
+        <div class="card-title"></div>
+      </header>
+      <div class="card-body">
+        <div class="card-grid"></div>
+      </div>
+      <footer class="card-footer">
+        <button class="btn small download-card">Baixar PNG</button>
+      </footer>
+    </article>
+  </template>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+  <script src="./js/app.js" type="module"></script>
+  <script src="./js/export.js" type="module"></script>
+</body>
+
+</html>
